@@ -24,6 +24,10 @@ task sourceJar(type: Jar) {
     classifier "sources"
 }
 
+test {
+    maxHeapSize = "1024m"
+}
+
 
 publishing {
     publications {
