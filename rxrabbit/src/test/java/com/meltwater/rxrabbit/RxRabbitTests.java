@@ -356,10 +356,13 @@ public class RxRabbitTests {
             }
         }, 0, 200, MILLISECONDS);
         int nrMessages = 30_000;
+        log.infoWithParams("Creating 3 consumers");
         final Observable<Message> consumers = Observable.merge(createConsumer(), createConsumer(), createConsumer());
-
+        log.infoWithParams("Created 3 consumers");
         AtomicInteger receivedCount = new AtomicInteger();
         final SortedSet<Integer> received = Collections.synchronizedSortedSet(new TreeSet<>());
+        log.infoWithParams("Subscribing to 3 consumers");
+
         Subscription s = consumers
                 .compose(new TakeAndAckTransformer(nrMessages * 2, TIMEOUT))
                 .map(RxRabbitTests::msgToInteger)
@@ -369,6 +372,7 @@ public class RxRabbitTests {
                     received.add(integer);
                 })
                 .subscribe();
+        log.infoWithParams("Subscribed to 3 consumers");
 
         SortedSet<Integer> sent = sendNMessages(nrMessages, publisher);
         log.infoWithParams("Waiting 3 sec");
