@@ -375,8 +375,6 @@ public class RxRabbitTests {
         log.infoWithParams("Subscribed to 3 consumers");
 
         SortedSet<Integer> sent = sendNMessages(nrMessages, publisher);
-        log.infoWithParams("Waiting 3 sec");
-        Thread.sleep(3000);
         log.infoWithParams("Finished publishing messages");
         while (receivedCount.get() < nrMessages) {
             Thread.sleep(10);
@@ -396,8 +394,6 @@ public class RxRabbitTests {
         while (countConsumers() > 0) {
             Thread.sleep(50);
         }
-        log.infoWithParams("Waiting 5 sec");
-        Thread.sleep(5000);
         scheduledExecutorService.shutdown();
         System.out.println("Test FINISHED");
     }
