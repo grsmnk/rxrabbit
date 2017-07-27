@@ -132,7 +132,6 @@ public class SingleChannelConsumer implements RabbitConsumer {
 
     private synchronized void close(AtomicReference<InternalConsumer> consumer) {
         log.infoWithParams("Un-subscribed invoked. Stopping the consumer and closing the channel.");
-        new NullPointerException().printStackTrace();
         if (consumer.get() != null) {
             consumer.get().close();
         }
