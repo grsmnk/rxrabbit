@@ -359,13 +359,21 @@ public class RxRabbitTests {
                 .subscribe();
 
         SortedSet<Integer> sent = sendNMessages(nrMessages, publisher);
+        log.infoWithParams("Finished publishing messages");
         while (receivedCount.get()<nrMessages){
             Thread.sleep(10);
         }
+        log.infoWithParams("Finished receiving messages");
         assertThat(received.size(), equalTo(nrMessages));
         assertEquals(received, sent);
+
+        log.infoWithParams("Counting consumers");
         int nrConsumers = countConsumers();
+        log.infoWithParams("Counted consumers", "consumers", nrConsumers);
+
+        log.infoWithParams("Unsubscribing");
         s.unsubscribe();
+        log.infoWithParams("Checking number of consumers");
         assertThat(nrConsumers, equalTo(3));
         while (countConsumers()>0){
             Thread.sleep(50);
