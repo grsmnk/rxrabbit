@@ -141,6 +141,7 @@ public class RabbitTestUtils {
                 .prepareGet("http://localhost:" + rabbitAdminPort + "/api/channels")
                 .setRealm(realm)
                 .execute().get();
+        log.infoWithParams("requesting consumers", "url", "http://localhost:" + rabbitAdminPort + "/api/channels", "response", response.getResponseBody());
         ObjectMapper mapper = new ObjectMapper();
         int consumers = 0;
         final List<Map<String,Object>> list = mapper.readValue(response.getResponseBody(), List.class);
