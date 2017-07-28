@@ -2,6 +2,7 @@ package com.meltwater.rxrabbit;
 
 import com.google.common.collect.Collections2;
 import com.meltwater.rxrabbit.docker.DockerContainers;
+import com.meltwater.rxrabbit.docker.JavaExecUtils;
 import com.meltwater.rxrabbit.example.ExampleCode;
 import com.meltwater.rxrabbit.impl.DefaultChannelFactory;
 import com.meltwater.rxrabbit.util.ConstantBackoffAlgorithm;
@@ -136,6 +137,7 @@ public class RxRabbitTests {
 
     @Before
     public void setup() throws Exception {
+        checkDockerPs();
         dockerContainers.rabbit().assertUp();
         rabbitTcpPort = dockerContainers.rabbit().tcpPort();
         rabbitAdminPort = dockerContainers.rabbit().adminPort();
@@ -150,13 +152,20 @@ public class RxRabbitTests {
         messagesSeen.clear();
         createQueues(channelFactory, inputQueue, new Exchange(inputExchange));
         publisher = publisherFactory.createPublisher();
+        checkDockerPs();
+    }
+
+    private void checkDockerPs() throws IOException, InterruptedException {
+        JavaExecUtils.execLocal("docker ps", new HashMap<>());
     }
 
     @After
     public void teardown() throws Exception {
+        checkDockerPs();
         publisher.close();
         messagesSeen.clear();
         waitForAllConnectionsToClose(channelFactory, dockerContainers);
+        checkDockerPs();
     }
 
     //TODO tests to add
@@ -350,6 +359,7 @@ public class RxRabbitTests {
         ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
         scheduledExecutorService.scheduleAtFixedRate(() -> {
             try {
+                checkDockerPs();
                 log.infoWithParams("Consumers are: ", "consumers", countConsumers());
             } catch (Exception e) {
                 e.printStackTrace();
